@@ -55,6 +55,7 @@ use yii\base\NotSupportedException;
  * @since 2.0
  */
 class Command extends Component {
+  public static $total_time; // seconds
   /**
    * @var Connection the DB connection that this command is associated with
    */
@@ -788,39 +789,32 @@ class Command extends Component {
     $start = microtime(true);
     try {
       $sql = $this->getSql();
-      // list($profile, $rawSql) = $this->logQuery(__METHOD__);
-
       if ($sql == '') {
         return 0;
       }
 
       $this->prepare(false);
-
       try {
-        // $profile and Yii::beginProfile($rawSql, __METHOD__);
-
         $this->pdoStatement->execute();
         $n = $this->pdoStatement->rowCount();
 
-        // $profile and Yii::endProfile($rawSql, __METHOD__);
-
-        $this->refreshTableSchema();
 
         return $n;
       } catch (\Exception $e) {
-        // $profile and Yii::endProfile($rawSql, __METHOD__);
         throw $this->db->getSchema()->convertException($e, $this->getRawSql());
       }
     } finally {
       $elapsed = microtime(true) - $start;
+      static::$total_time += $elapsed;
       $elapsed = $elapsed * 1000;
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\e[32mMySQL\e[0m Executing Command {$elapsed}");
+      Yii::info("\e[32mMySQL\e[0m Executing Command {$elapsed}".$this->getRawSql());
     }
+    return null;
   }
 
   /**
@@ -877,13 +871,14 @@ class Command extends Component {
 
     } finally {
       $elapsed = microtime(true) - $start;
+      static::$total_time += $elapsed;
       $elapsed = $elapsed * 1000;
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\e[32mMySQL\e[0m Executing Command {$elapsed}");
+      Yii::info("\e[32mMySQL\e[0m Query Command {$elapsed} ".$this->getRawSql());
     }
     return null;
   }

@@ -263,8 +263,9 @@ class MemCache extends Cache {
     try {
       return $this->_cache->get($key);
     } finally {
-      $elapsed = (microtime(true) - $start) * 1000;
+      $elapsed = (microtime(true) - $start);
       self::$total_time += $elapsed;
+      $elapsed = $elapsed * 1000;
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
       } else {
@@ -285,8 +286,9 @@ class MemCache extends Cache {
     try {
       return $this->useMemcached ? $this->_cache->getMulti($keys) : $this->_cache->get($keys);
     } finally {
-      $elapsed = (microtime(true) - $start) * 1000;
+      $elapsed = (microtime(true) - $start);
       self::$total_time += $elapsed;
+      $elapsed = $elapsed * 1000;
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
       } else {
@@ -317,8 +319,9 @@ class MemCache extends Cache {
     try {
       return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
     } finally {
-      $elapsed = (microtime(true) - $start) * 1000;
+      $elapsed = (microtime(true) - $start);
       self::$total_time += $elapsed;
+      $elapsed = $elapsed * 1000;
 
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
@@ -353,8 +356,9 @@ class MemCache extends Cache {
       }
 
     } finally {
-      $elapsed = (microtime(true) - $start) * 1000;
+      $elapsed = (microtime(true) - $start);
       self::$total_time += $elapsed;
+      $elapsed = $elapsed * 1000;
 
       if ($elapsed > 10) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
