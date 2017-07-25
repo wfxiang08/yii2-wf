@@ -367,7 +367,7 @@ abstract class Application extends Module {
    */
   public function run() {
     try {
-
+      $start = microtime(true);
       $this->state = self::STATE_BEFORE_REQUEST;
       $this->trigger(self::EVENT_BEFORE_REQUEST);
 
@@ -388,7 +388,7 @@ abstract class Application extends Module {
 
       Yii::info("\033[35m".$msg."\e[0m");
       Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
-      Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
+
 
       $this->state = self::STATE_AFTER_REQUEST;
       $this->trigger(self::EVENT_AFTER_REQUEST);
@@ -405,6 +405,16 @@ abstract class Application extends Module {
       $this->end($e->statusCode, isset($response) ? $response : null);
       return $e->statusCode;
 
+    } finally {
+      $elapsed = microtime(true) - $start;
+      $elapsed = $elapsed * 1000;
+      if ($elapsed > 100) {
+        $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
+      } else {
+        $elapsed = sprintf("%.3fms", $elapsed);
+      }
+      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
+      Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
     }
   }
 
