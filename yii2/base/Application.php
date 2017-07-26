@@ -360,6 +360,8 @@ abstract class Application extends Module {
     Yii::setAlias('@app', $this->getBasePath());
   }
 
+  public static $start;
+
   /**
    * Runs the application.
    * This is the main entrance of an application.
@@ -367,7 +369,7 @@ abstract class Application extends Module {
    */
   public function run() {
     try {
-      $start = microtime(true);
+      static::$start = microtime(true);
       $this->state = self::STATE_BEFORE_REQUEST;
       $this->trigger(self::EVENT_BEFORE_REQUEST);
 
@@ -382,12 +384,7 @@ abstract class Application extends Module {
 
       Yii::info("\033[31m--->--->--->--->--->--->--->--->\033[0m");
       $response = $this->handleRequest($this->getRequest());
-      $msg = "RedisTotalBytes: ".Connection::$total_bytes.", RedisTotalTime: ".sprintf("%.3fms", Connection::$total_time * 1000);
-      $msg = $msg.", DBSchema TotalBytes: ".Schema::$total_bytes.", DBSchema TotalTime: ".sprintf("%.3fms", Schema::$total_time * 1000).", MySQL: ".sprintf("%.3fms", Command::$total_time * 1000);
-      $msg = $msg.", Memcache TotalTime: ".sprintf("%.3fms", MemCache::$total_time * 1000);
 
-      Yii::info("\033[35m".$msg."\e[0m");
-      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
 
 
       $this->state = self::STATE_AFTER_REQUEST;
@@ -406,15 +403,23 @@ abstract class Application extends Module {
       return $e->statusCode;
 
     } finally {
-      $elapsed = microtime(true) - $start;
+      $msg = "RedisTotalBytes: ".Connection::$total_bytes.", RedisTotalTime: ".sprintf("%.3fms", Connection::$total_time * 1000);
+      $msg = $msg.", DBSchema TotalBytes: ".Schema::$total_bytes.", DBSchema TotalTime: ".sprintf("%.3fms", Schema::$total_time * 1000).", MySQL: ".sprintf("%.3fms", Command::$total_time * 1000);
+      $msg = $msg.", Memcache TotalTime: ".sprintf("%.3fms", MemCache::$total_time * 1000);
+
+      Yii::info("\033[35m".$msg."\e[0m");
+      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
+
+      $elapsed = microtime(true) - static::$start;
       $elapsed = $elapsed * 1000;
       if ($elapsed > 100) {
         $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
       Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
+      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
+
     }
   }
 
@@ -655,6 +660,24 @@ abstract class Application extends Module {
     if (YII_ENV_TEST) {
       throw new ExitException($status);
     } else {
+      $msg = "RedisTotalBytes: ".Connection::$total_bytes.", RedisTotalTime: ".sprintf("%.3fms", Connection::$total_time * 1000);
+      $msg = $msg.", DBSchema TotalBytes: ".Schema::$total_bytes.", DBSchema TotalTime: ".sprintf("%.3fms", Schema::$total_time * 1000).", MySQL: ".sprintf("%.3fms", Command::$total_time * 1000);
+      $msg = $msg.", Memcache TotalTime: ".sprintf("%.3fms", MemCache::$total_time * 1000);
+
+      Yii::info("\033[35m".$msg."\e[0m");
+      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
+      
+      // 这地方很恐怖, 直接exit, final都没有机会执行
+      $elapsed = microtime(true) - static::$start;
+      $elapsed = $elapsed * 1000;
+      if ($elapsed > 100) {
+        $elapsed = "\033[35m".sprintf("%.3fms", $elapsed)."\033[0m";
+      } else {
+        $elapsed = sprintf("%.3fms", $elapsed);
+      }
+      Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
+      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
+
       exit($status);
     }
   }
