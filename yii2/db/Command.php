@@ -879,10 +879,14 @@ class Command extends Component {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      if (strcmp($this->getRawSql(), "SELECT * FROM `singer_verified` WHERE 0=1") == 0) {
-        throw new \Exception("Hello");
-      }
-      Yii::info("\e[32mMySQL\e[0m Query Command {$elapsed} ".$this->getRawSql());
+      $raw_sql = $this->getRawSql();
+//      if (strpos($raw_sql, "FROM `singer_verified`")) {
+//        throw new \Exception("Hello");
+//      }
+//      if (strpos($raw_sql, "IS NULL") && strpos($raw_sql, "`song`")) {
+//        throw new \Exception("Hello");
+//      }
+      Yii::info("\e[32mMySQL\e[0m Query Command {$elapsed} ".$raw_sql);
     }
     return null;
   }

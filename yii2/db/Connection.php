@@ -253,6 +253,8 @@ class Connection extends Component {
    * this may need to be set true so that PDO can emulate the prepare support to bypass
    * the buggy native prepare support.
    * The default value is null, which means the PDO ATTR_EMULATE_PREPARES value will not be changed.
+   *
+   * Php中默认为true
    */
   public $emulatePrepare;
   /**

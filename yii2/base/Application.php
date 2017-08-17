@@ -666,7 +666,7 @@ abstract class Application extends Module {
 
       Yii::info("\033[35m".$msg."\e[0m");
       Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
-      
+
       // 这地方很恐怖, 直接exit, final都没有机会执行
       $elapsed = microtime(true) - static::$start;
       $elapsed = $elapsed * 1000;
