@@ -379,9 +379,11 @@ class Client extends Component {
       ->setUrl($url)
       ->addHeaders($headers)
       ->addOptions($options);
+
     if (is_array($data)) {
       $request->setData($data);
     } else {
+      // 直接设置Content
       $request->setContent($data);
     }
     return $request;

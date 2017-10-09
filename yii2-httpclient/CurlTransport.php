@@ -165,6 +165,9 @@ class CurlTransport extends Transport {
       if ($method === 'HEAD') {
         $curlOptions[CURLOPT_NOBODY] = true;
       }
+      // 其他情况没有变化
+      // 不要主动设置 content 为null
+      //
     } else {
       $curlOptions[CURLOPT_POSTFIELDS] = $content;
     }

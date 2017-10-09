@@ -555,6 +555,7 @@ class Connection extends Component {
       return;
     }
 
+    // 1. 目前没有指定: masters, 直接跳过
     if (!empty($this->masters)) {
       $db = $this->getMaster();
       if ($db !== null) {
@@ -565,6 +566,7 @@ class Connection extends Component {
       }
     }
 
+    // 2. 直接使用默认的dns来处理
     if (empty($this->dsn)) {
       throw new InvalidConfigException('Connection::dsn cannot be empty.');
     }
@@ -888,6 +890,7 @@ class Connection extends Component {
    */
   public function getSlavePdo($fallbackToMaster = true) {
     $db = $this->getSlave(false);
+
     if ($db === null) {
       return $fallbackToMaster ? $this->getMasterPdo() : null;
     } else {
@@ -917,6 +920,7 @@ class Connection extends Component {
       return $fallbackToMaster ? $this : null;
     }
 
+    // 从pool中随机创建一个slave
     if ($this->_slave === false) {
       $this->_slave = $this->openFromPool($this->slaves, $this->slaveConfig);
     }

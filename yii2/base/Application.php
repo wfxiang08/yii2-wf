@@ -11,6 +11,7 @@ use Yii;
 use yii\caching\MemCache;
 use yii\db\Command;
 use yii\db\Schema;
+use yii\i18n\I18N;
 use yii\redis\Connection;
 
 /**
@@ -386,7 +387,6 @@ abstract class Application extends Module {
       $response = $this->handleRequest($this->getRequest());
 
 
-
       $this->state = self::STATE_AFTER_REQUEST;
       $this->trigger(self::EVENT_AFTER_REQUEST);
 
@@ -407,6 +407,8 @@ abstract class Application extends Module {
       $msg = $msg.", DBSchema TotalBytes: ".Schema::$total_bytes.", DBSchema TotalTime: ".sprintf("%.3fms", Schema::$total_time * 1000).", MySQL: ".sprintf("%.3fms", Command::$total_time * 1000);
       $msg = $msg.", Memcache TotalTime: ".sprintf("%.3fms", MemCache::$total_time * 1000);
 
+      $msg = $msg.", I18n: ".sprintf("%.3fms", I18N::$elapsed_seconds * 1000);
+
       Yii::info("\033[35m".$msg."\e[0m");
       Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
 
@@ -417,9 +419,7 @@ abstract class Application extends Module {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
-      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
-
+      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m");
     }
   }
 
@@ -675,8 +675,7 @@ abstract class Application extends Module {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\033[36m<---<---<---<---<---<---<---<---<---\033[0m");
-      Yii::info("===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}");
+      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m");
 
       exit($status);
     }

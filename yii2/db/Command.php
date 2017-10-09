@@ -209,6 +209,10 @@ class Command extends Component {
       // master is in a transaction. use the same connection.
       $forRead = false;
     }
+
+    // 入口函数:
+    // getSlave
+    // getMaster
     if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
       $pdo = $this->db->getSlavePdo();
     } else {
@@ -880,7 +884,7 @@ class Command extends Component {
       }
 
       $raw_sql = $this->getRawSql();
-//      if (strpos($raw_sql, "FROM `singer_verified`")) {
+//      if (strpos($raw_sql, "`media_id`=0")) {
 //        throw new \Exception("Hello");
 //      }
 //      if (strpos($raw_sql, "IS NULL") && strpos($raw_sql, "`song`")) {
@@ -890,6 +894,8 @@ class Command extends Component {
     }
     return null;
   }
+
+  public static $count1 = 0;
 
   /**
    * Marks a specified table schema to be refreshed after command execution.

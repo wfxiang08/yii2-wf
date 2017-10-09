@@ -272,7 +272,7 @@ class MemCache extends Cache {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValues: ".$key);
+      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValue: ".$key);
     }
   }
 

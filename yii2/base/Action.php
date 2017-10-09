@@ -36,87 +36,81 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Action extends Component
-{
-    /**
-     * @var string ID of the action
-     */
-    public $id;
-    /**
-     * @var Controller|\yii\web\Controller the controller that owns this action
-     */
-    public $controller;
+class Action extends Component {
+  /**
+   * @var string ID of the action
+   */
+  public $id;
+  /**
+   * @var Controller|\yii\web\Controller the controller that owns this action
+   */
+  public $controller;
 
 
-    /**
-     * Constructor.
-     *
-     * @param string $id the ID of this action
-     * @param Controller $controller the controller that owns this action
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     */
-    public function __construct($id, $controller, $config = [])
-    {
-        $this->id = $id;
-        $this->controller = $controller;
-        parent::__construct($config);
+  /**
+   * Constructor.
+   *
+   * @param string $id the ID of this action
+   * @param Controller $controller the controller that owns this action
+   * @param array $config name-value pairs that will be used to initialize the object properties
+   */
+  public function __construct($id, $controller, $config = []) {
+    $this->id = $id;
+    $this->controller = $controller;
+    parent::__construct($config);
+  }
+
+  /**
+   * Returns the unique ID of this action among the whole application.
+   *
+   * @return string the unique ID of this action among the whole application.
+   */
+  public function getUniqueId() {
+    return $this->controller->getUniqueId().'/'.$this->id;
+  }
+
+  /**
+   * Runs this action with the specified parameters.
+   * This method is mainly invoked by the controller.
+   *
+   * @param array $params the parameters to be bound to the action's run() method.
+   * @return mixed the result of the action
+   * @throws InvalidConfigException if the action class does not have a run() method
+   */
+  public function runWithParams($params) {
+    if (!method_exists($this, 'run')) {
+      throw new InvalidConfigException(get_class($this).' must define a "run()" method.');
     }
-
-    /**
-     * Returns the unique ID of this action among the whole application.
-     *
-     * @return string the unique ID of this action among the whole application.
-     */
-    public function getUniqueId()
-    {
-        return $this->controller->getUniqueId() . '/' . $this->id;
+    $args = $this->controller->bindActionParams($this, $params);
+    Yii::trace('Running action: '.get_class($this).'::run()', __METHOD__);
+    if (Yii::$app->requestedParams === null) {
+      Yii::$app->requestedParams = $args;
     }
+    if ($this->beforeRun()) {
+      $result = call_user_func_array([$this, 'run'], $args);
+      $this->afterRun();
 
-    /**
-     * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
-     *
-     * @param array $params the parameters to be bound to the action's run() method.
-     * @return mixed the result of the action
-     * @throws InvalidConfigException if the action class does not have a run() method
-     */
-    public function runWithParams($params)
-    {
-        if (!method_exists($this, 'run')) {
-            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
-        }
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::trace('Running action: ' . get_class($this) . '::run()', __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
-        if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
-            $this->afterRun();
-
-            return $result;
-        } else {
-            return null;
-        }
+      return $result;
+    } else {
+      return null;
     }
+  }
 
-    /**
-     * This method is called right before `run()` is executed.
-     * You may override this method to do preparation work for the action run.
-     * If the method returns false, it will cancel the action.
-     *
-     * @return bool whether to run the action.
-     */
-    protected function beforeRun()
-    {
-        return true;
-    }
+  /**
+   * This method is called right before `run()` is executed.
+   * You may override this method to do preparation work for the action run.
+   * If the method returns false, it will cancel the action.
+   *
+   * @return bool whether to run the action.
+   */
+  protected function beforeRun() {
+    return true;
+  }
 
-    /**
-     * This method is called right after `run()` is executed.
-     * You may override this method to do post-processing work for the action run.
-     */
-    protected function afterRun()
-    {
-    }
+  /**
+   * This method is called right after `run()` is executed.
+   * You may override this method to do post-processing work for the action run.
+   */
+  protected function afterRun() {
+  }
 }

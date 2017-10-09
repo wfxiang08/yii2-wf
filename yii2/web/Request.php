@@ -191,12 +191,14 @@ class Request extends \yii\base\Request {
     } else {
       $build_time = sprintf("%.3fms", $build_time);
     }
-    Yii::info("request->resolve elapsed, total: ".$build_time." vs. bld. ".sprintf("%.3fms", $elapsed));
+    Yii::info("request->resolve elapsed, build: ".$build_time." vs. elapsed. ".sprintf("%.3fms", $elapsed));
 
     if ($result !== false) {
       list ($route, $params) = $result;
       if ($this->_queryParams === null) {
+        Yii::info("GET1: ".json_encode($_GET));
         $_GET = $params + $_GET; // preserve numeric keys
+        Yii::info("GET2: ".json_encode($_GET));
       } else {
         $this->_queryParams = $params + $this->_queryParams;
       }
@@ -510,6 +512,7 @@ class Request extends \yii\base\Request {
    */
   public function getQueryParam($name, $defaultValue = null) {
     $params = $this->getQueryParams();
+    \Yii::info("Params: ".json_encode($params).', name: '.$name . ", GET: " . json_encode($_GET));
 
     return isset($params[$name]) ? $params[$name] : $defaultValue;
   }

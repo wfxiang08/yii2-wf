@@ -131,9 +131,11 @@ abstract class Schema extends Object {
     if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
       /* @var $cache Cache */
       $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
+
       if ($cache instanceof Cache) {
         $t = microtime(true);
         $key = $this->getCacheKey($name);
+
         if ($refresh || ($table = $cache->get($key)) === false) {
           $this->_tables[$name] = $table = $this->loadTableSchema($realName);
           if ($table !== null) {
