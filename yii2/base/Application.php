@@ -383,7 +383,7 @@ abstract class Application extends Module {
       MemCache::$total_time = 0;
       Command::$total_time = 0;
 
-      Yii::info("\033[31m--->--->--->--->--->--->--->--->\033[0m");
+      Yii::info("\033[31m--->--->--->--->--->--->--->--->\033[0m", SM_PROFILE);
       $response = $this->handleRequest($this->getRequest());
 
 
@@ -409,8 +409,8 @@ abstract class Application extends Module {
 
       $msg = $msg.", I18n: ".sprintf("%.3fms", I18N::$elapsed_seconds * 1000);
 
-      Yii::info("\033[35m".$msg."\e[0m");
-      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
+      Yii::info("\033[35m".$msg."\e[0m", SM_PROFILE);
+      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000), SM_PROFILE);
 
       $elapsed = microtime(true) - static::$start;
       $elapsed = $elapsed * 1000;
@@ -419,7 +419,7 @@ abstract class Application extends Module {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m");
+      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m", SM_PROFILE);
     }
   }
 
@@ -664,8 +664,8 @@ abstract class Application extends Module {
       $msg = $msg.", DBSchema TotalBytes: ".Schema::$total_bytes.", DBSchema TotalTime: ".sprintf("%.3fms", Schema::$total_time * 1000).", MySQL: ".sprintf("%.3fms", Command::$total_time * 1000);
       $msg = $msg.", Memcache TotalTime: ".sprintf("%.3fms", MemCache::$total_time * 1000);
 
-      Yii::info("\033[35m".$msg."\e[0m");
-      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000));
+      Yii::info("\033[35m".$msg."\e[0m", SM_PROFILE);
+      Yii::info("Total Time: ".sprintf("%.3fms", (MemCache::$total_time + Command::$total_time + Connection::$total_time) * 1000), SM_PROFILE);
 
       // 这地方很恐怖, 直接exit, final都没有机会执行
       $elapsed = microtime(true) - static::$start;
@@ -675,7 +675,7 @@ abstract class Application extends Module {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m");
+      Yii::info("\e[32m===> Http Request Action: {$this->requestedAction->getUniqueId()}, Elapsed {$elapsed}\e[0m", SM_PROFILE);
 
       exit($status);
     }

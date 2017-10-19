@@ -554,7 +554,7 @@ class Connection extends Component {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      \Yii::info("\e[32mREDIS\e[0m Open Connection {$elapsed}");
+      \Yii::info("\e[32mREDIS\e[0m Open Connection {$elapsed}", SM_PROFILE);
     }
   }
 
@@ -679,7 +679,7 @@ class Connection extends Component {
     if ($size > 10240) {
       $size = "\033[35m{$size}\033[0m";
     }
-    \Yii::info("\e[32mREDIS\e[0m Executing Command {$elapsed}, size: {$size} , \033[36m==> \033[0m ".join(", ", $params));
+    \Yii::info("\e[32mREDIS\e[0m Executing Command {$elapsed}, size: {$size} , \033[36m==> \033[0m ".join(", ", $params), SM_PROFILE);
 
     return $result;
   }

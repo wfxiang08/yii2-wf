@@ -816,7 +816,7 @@ class Command extends Component {
       } else {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
-      Yii::info("\e[32mMySQL\e[0m Executing Command {$elapsed}".$this->getRawSql());
+      Yii::info("\e[32mMySQL\e[0m Executing Command {$elapsed}".$this->getRawSql(), SM_PROFILE);
     }
     return null;
   }
@@ -890,7 +890,7 @@ class Command extends Component {
 //      if (strpos($raw_sql, "IS NULL") && strpos($raw_sql, "`song`")) {
 //        throw new \Exception("Hello");
 //      }
-      Yii::info("\e[32mMySQL\e[0m Query Command {$elapsed} ".$raw_sql);
+      Yii::info("\e[32mMySQL\e[0m Query Command {$elapsed} ".$raw_sql, SM_PROFILE);
     }
     return null;
   }

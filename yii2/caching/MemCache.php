@@ -272,7 +272,7 @@ class MemCache extends Cache {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValue: ".$key);
+      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValue: ".$key, SM_PROFILE);
     }
   }
 
@@ -295,7 +295,7 @@ class MemCache extends Cache {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValues ".join(",", $keys));
+      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m getValues ".join(",", $keys), SM_PROFILE);
     }
   }
 
@@ -329,7 +329,7 @@ class MemCache extends Cache {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m setValue: ".$key);
+      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m setValue: ".$key, SM_PROFILE);
     }
   }
 
@@ -366,7 +366,7 @@ class MemCache extends Cache {
         $elapsed = sprintf("%.3fms", $elapsed);
       }
 
-      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m setValues: ".join(",", array_keys($data)));
+      \Yii::info("\e[31mMEM\e[0m Executing Command {$elapsed} , \033[36m==> \033[0m setValues: ".join(",", array_keys($data)), SM_PROFILE);
     }
   }
 

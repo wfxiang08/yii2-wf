@@ -118,6 +118,7 @@ class Controller extends Component implements ViewContextInterface {
    * @see createAction()
    */
   public function runAction($id, $params = []) {
+    // 1. 创建InlineAction
     $action = $this->createAction($id);
     if ($action === null) {
       throw new InvalidRouteException('Unable to resolve the request: '.$this->getUniqueId().'/'.$id);
@@ -136,6 +137,7 @@ class Controller extends Component implements ViewContextInterface {
     $modules = [];
     $runAction = true;
 
+    // 2. 调用各种beforeAction: 8ms左右的时间开销?
     // call beforeAction on modules
     foreach ($this->getModules() as $module) {
       if ($module->beforeAction($action)) {
@@ -151,6 +153,7 @@ class Controller extends Component implements ViewContextInterface {
 
     if ($runAction && $this->beforeAction($action)) {
       // run the action
+      // 3. 核心逻辑调用
       $result = $action->runWithParams($params);
 
       $result = $this->afterAction($action, $result);
