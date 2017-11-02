@@ -13,6 +13,7 @@ use yii\base\UnknownClassException;
 use yii\log\Logger;
 use yii\di\Container;
 
+defined('SM_PROFILE') or define('SM_PROFILE', "smprofile");
 /**
  * Gets the application start timestamp.
  */
